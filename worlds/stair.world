@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <model name="stair">
+      <pose>0.7 -0.2 0.2 0 0 0</pose>
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.5 0.3 0.4</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.5 0.3 0.4</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    
+    <!--joint name="sensor_joint" type="fixed">
+      <child>sensor</child>
+      <parent>robot::wrist_3_joint</parent>
+    </joint-->
+    
+    <plugin name="ModelCollisionPlugin" filename="libUR10ModelCollisionPlugin.so"/>
+  </world>
+</sdf>

@@ -1,0 +1,7 @@
+# Имя модели
+std_msgs/String model_name
+---
+# Положение центра параллелепипеда
+geometry_msgs/Point center
+# Габариты параллелепипеда
+geometry_msgs/Vector3 dimensions

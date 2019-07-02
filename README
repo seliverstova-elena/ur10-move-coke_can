@@ -1,0 +1,46 @@
+1) В директории catkin_ws соберите пакеты из репозитория 
+https://github.com/ros-industrial/universal_robot/tree/indigo-devel
+
+2) Файл ur10_joint_limited_robot.urdf.xacro из пакета ur_description измените следующим образом:
+
+2.1) Замените описание шарнира с именем "${prefix}wrist_3_joint" на следующее:
+
+    <joint name="${prefix}wrist_3_joint" type="revolute">
+      <parent link="${prefix}wrist_2_link" />
+      <child link = "${prefix}wrist_3_link" />
+      <origin xyz="0.0 0.0 ${wrist_2_length}" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="54.0" velocity="3.2"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${wrist_3_lower_limit}" upper="${wrist_3_upper_limit}" effort="54.0" velocity="3.2"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>       
+      <sensor name="force_torque" type="force_torque">
+          <update_rate>30</update_rate>
+       </sensor>
+    </joint>
+
+2.2) В конце этого файла до </xacro:macro> вставьте следующее:
+    
+    <gazebo reference="${prefix}wrist_3_joint">
+        <provideFeedback>true</provideFeedback>
+    </gazebo>
+    <gazebo>
+        <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+            <updateRate>50.0</updateRate>
+            <topicName>${prefix}wrist_3_joint/ft_sensor</topicName>
+            <jointName>${prefix}wrist_3_joint</jointName>
+        </plugin>
+    </gazebo>
+
+3) Убедитесь, что в директории ~/.gazebo/models есть модель coke_can из базы данный моделей Gazebo
+
+4) В директории catkin_ws соберите данный пакет
+
+5) Для запуска в первом окне терминала выполните:
+roslaunch ur10 ur10.launch
+
+Во втором окне терминала выполните:
+roslaunch ur10 demo.launch
